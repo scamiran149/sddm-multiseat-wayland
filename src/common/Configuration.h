@@ -79,6 +79,7 @@ namespace SDDM {
 
         Section(Wayland,
             Entry(CompositorCommand,   QString,     _S("weston --shell=kiosk"),                 _S("Path of the Wayland compositor to execute when starting the greeter"));
+            Entry(SeatDrmOverride,     QStringList, QStringList(),                              _S("Comma-separated list of seat to DRM device mappings (e.g. seat1=/dev/dri/card1,seat2=/dev/dri/card2)"));
             Entry(SessionDir,          QStringList, {_S("/usr/local/share/wayland-sessions"),
                                                      _S("/usr/share/wayland-sessions")},        _S("Comma-separated list of directories containing available Wayland sessions"));
             Entry(SessionCommand,      QString,     _S(WAYLAND_SESSION_COMMAND),                _S("Path to a script to execute when starting the desktop session"));

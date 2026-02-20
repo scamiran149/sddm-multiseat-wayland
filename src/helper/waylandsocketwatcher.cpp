@@ -26,12 +26,17 @@
 
 namespace SDDM {
 
-WaylandSocketWatcher::WaylandSocketWatcher(QObject *parent )
+WaylandSocketWatcher::WaylandSocketWatcher(const QString &socketName, QObject *parent )
     : QObject(parent)
     , m_runtimeDir(QDir(QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation)))
 {
     m_runtimeDir.setFilter(QDir::Files | QDir::System);
-    m_runtimeDir.setNameFilters(QStringList() << QLatin1String("wayland-?"));
+    if (!socketName.isEmpty()) {
+        m_runtimeDir.setNameFilters(QStringList() << socketName);
+        m_socketName = socketName;
+    } else {
+        m_runtimeDir.setNameFilters(QStringList() << QLatin1String("wayland-?"));
+    }
 }
 
 WaylandSocketWatcher::Status WaylandSocketWatcher::status() const
@@ -68,7 +73,7 @@ void WaylandSocketWatcher::start()
         m_runtimeDir.refresh();
         const QFileInfoList fileInfoList = m_runtimeDir.entryInfoList();
         for (const QFileInfo &fileInfo : fileInfoList) {
-            if (fileInfo.ownerId() == ::getuid()) {
+            if (fileInfo.ownerId() == ::getuid() && (m_socketName.isEmpty() || fileInfo.fileName() == m_socketName)) {
                 qDebug() << "Found Wayland socket" << fileInfo.absoluteFilePath();
                 m_timer.stop();
                 if (!m_watcher.isNull())
