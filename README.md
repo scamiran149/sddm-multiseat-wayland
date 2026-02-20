@@ -41,6 +41,27 @@ The implementation relies on logind and the `XDG_SEAT` variable to handle hardwa
 * **DRM Isolation:** The compositor uses the injected `XDG_SEAT` to identify and claim the correct GPU DRM node.
 * **Input Handling:** libinput utilizes the seat assignment to route keyboards, mice, and touchscreens to the correct greeter instance, preventing cross-seat input leakage.
 
+### Configuration (`sddm.conf`)
+
+To enable the Wayland greeter with multi-seat support, you need to configure `sddm.conf` (usually located at `/etc/sddm.conf` or `/etc/sddm.conf.d/`).
+
+You must set the display server to `wayland` in the `[General]` section and provide the appropriate Wayland compositor command in the `[Wayland]` section.
+
+Example configuration:
+
+```ini
+[General]
+# Set the display server to wayland
+DisplayServer=wayland
+
+[Wayland]
+# Path to the Wayland compositor to execute when starting the greeter
+CompositorCommand=kwin_wayland --drm --no-lockscreen --no-global-shortcuts --locale1
+
+# Optional: Map seats to specific DRM devices if logind routing needs overriding
+# SeatDrmOverride=seat0=/dev/dri/card0,seat1=/dev/dri/card1
+```
+
 ## SCREENSHOTS
 
 ![sample screenshot](https://raw.github.com/sddm/sddm/master/src/greeter/theme/maui.jpg)
