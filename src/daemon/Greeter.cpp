@@ -33,7 +33,12 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QProcess>
+#include <QtCore/QThread>
 #include <VirtualTerminal.h>
+
+#include <sys/stat.h>
+#include <pwd.h>
+#include <unistd.h>
 
 namespace SDDM {
 Greeter::Greeter(Display *parent) : QObject(parent), m_display(parent) {
@@ -250,8 +255,21 @@ bool Greeter::start() {
       QString waylandDisplay = QStringLiteral("wayland-%1").arg(seatName);
       env.insert(QStringLiteral("WAYLAND_DISPLAY"), waylandDisplay);
 
+      // Create a secure directory for the socket
+      QString runtimeDir = mainConfig.Wayland.SessionDir.get().first(); // Fallback, let's use a known secure path instead.
+      QString dbusDir = QStringLiteral("/var/run/sddm");
+      QDir().mkpath(dbusDir);
+
+      struct passwd *pw = getpwnam("sddm");
+      if (pw && !daemonApp->testing()) {
+          if (chown(qPrintable(dbusDir), pw->pw_uid, pw->pw_gid) == -1) {
+              qWarning() << "Failed to change owner of the dbus runtime directory";
+          }
+          chmod(qPrintable(dbusDir), 0755);
+      }
+
       QString dbusAddress =
-          QStringLiteral("unix:path=/tmp/sddm-wayland-dbus-%1").arg(seatName);
+          QStringLiteral("unix:path=%1/wayland-dbus-%2").arg(dbusDir, seatName);
       env.insert(QStringLiteral("DBUS_SESSION_BUS_ADDRESS"), dbusAddress);
 
       m_dbusProcess = new QProcess(this);
@@ -259,6 +277,22 @@ bool Greeter::start() {
                            {QStringLiteral("--session"),
                             QStringLiteral("--address=%1").arg(dbusAddress),
                             QStringLiteral("--nofork")});
+
+      if (!daemonApp->testing()) {
+          if (m_dbusProcess->waitForStarted()) {
+              if (pw) {
+                  // wait for socket to be created
+                  QString socketPath = QStringLiteral("%1/wayland-dbus-%2").arg(dbusDir, seatName);
+                  int retries = 50; // 50 * 20ms = 1s
+                  while (retries-- > 0 && access(qPrintable(socketPath), F_OK) == -1) {
+                      QThread::msleep(20);
+                  }
+                  if (chown(qPrintable(socketPath), pw->pw_uid, pw->pw_gid) == -1) {
+                      qWarning() << "Failed to change owner of the dbus socket";
+                  }
+              }
+          }
+      }
     }
     m_auth->insertEnvironment(env);
 

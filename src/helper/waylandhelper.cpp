@@ -98,7 +98,7 @@ bool WaylandHelper::startProcess(const QString &cmd, QProcess **p) {
   auto args = QProcess::splitCommand(cmd);
   const auto program = args.takeFirst();
 
-  QString waylandDisplay = qEnvironmentVariable("WAYLAND_DISPLAY");
+  QString waylandDisplay = m_environment.value(QStringLiteral("WAYLAND_DISPLAY"));
   if (!waylandDisplay.isEmpty()) {
     args << QStringLiteral("--socket") << waylandDisplay;
   }

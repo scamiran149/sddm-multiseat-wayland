@@ -93,10 +93,27 @@ void WaylandSocketWatcher::start()
         m_watcher->deleteLater();
         m_status = Failed;
         Q_EMIT failed();
+        return;
     }
 
     // Start
     m_timer.start();
+
+    // Check if the socket already exists right now
+    m_runtimeDir.refresh();
+    const QFileInfoList fileInfoList = m_runtimeDir.entryInfoList();
+    for (const QFileInfo &fileInfo : fileInfoList) {
+        if (fileInfo.ownerId() == ::getuid() && (m_socketName.isEmpty() || fileInfo.fileName() == m_socketName)) {
+            qDebug() << "Found Wayland socket" << fileInfo.absoluteFilePath();
+            m_timer.stop();
+            if (!m_watcher.isNull())
+                m_watcher->deleteLater();
+            m_socketName = fileInfo.fileName();
+            m_status = Started;
+            Q_EMIT started();
+            break;
+        }
+    }
 }
 
 void WaylandSocketWatcher::stop()
