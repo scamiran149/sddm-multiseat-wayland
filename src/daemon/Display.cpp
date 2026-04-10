@@ -77,7 +77,7 @@ namespace SDDM {
     }
 
     int fetchAvailableVt() {
-        if (!isTtyInUse(QStringLiteral("tty%1").arg(SDDM_INITIAL_VT))) {
+        if (!isTtyInUse(QStringLiteral("tty" STRINGIFY(SDDM_INITIAL_VT)))) {
             return SDDM_INITIAL_VT;
         }
         const auto vt = VirtualTerminal::currentVt();
@@ -419,9 +419,7 @@ namespace SDDM {
             for(const SessionInfo &s : reply.value()) {
                 if (s.userName == user) {
                     OrgFreedesktopLogin1SessionInterface session(Logind::serviceName(), s.sessionPath.path(), QDBusConnection::systemBus());
-                    if ((session.service() == QLatin1String("sddm")
-                        || session.service() == QLatin1String("sddm-autologin"))
-                            && session.state() == QLatin1String("online")) {
+                    if (session.service() == QLatin1String("sddm") && session.state() == QLatin1String("online")) {
                         m_reuseSessionId = s.sessionId;
                         break;
                     }
