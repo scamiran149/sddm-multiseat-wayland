@@ -1,0 +1,3 @@
+qml6:Depends=qml6-module-qtquick
+misc:Depends=
+misc:Pre-Depends=

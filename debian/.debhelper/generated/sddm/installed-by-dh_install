@@ -1,0 +1,17 @@
+./debian/Xsession
+./debian/wayland-session
+debian/tmp/usr/bin/sddm
+debian/tmp/usr/bin/sddm-greeter-qt6
+debian/tmp/usr/lib/x86_64-linux-gnu/qt6/qml/SddmComponents/
+debian/tmp/usr/lib/x86_64-linux-gnu/sddm/
+debian/tmp/usr/lib/sysusers.d/sddm.conf
+debian/tmp/usr/lib/tmpfiles.d/sddm.conf
+debian/tmp/usr/share/dbus-1/system.d/sddm_org.freedesktop.DisplayManager.conf
+debian/tmp/usr/share/man/man1/sddm-greeter.1
+debian/tmp/usr/share/man/man1/sddm.1
+debian/tmp/usr/share/man/man5/sddm-state.conf.5
+debian/tmp/usr/share/man/man5/sddm.conf.5
+debian/tmp/usr/share/sddm/faces
+debian/tmp/usr/share/sddm/flags/
+debian/tmp/usr/share/sddm/scripts/
+debian/tmp/usr/share/sddm/translations-qt6/

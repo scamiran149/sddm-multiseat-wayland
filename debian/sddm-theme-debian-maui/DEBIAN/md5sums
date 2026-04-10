@@ -1,0 +1,12 @@
+ad9ee2fabf7d2b2bda1f166df01c4baf  usr/share/doc/sddm-theme-debian-maui/README
+07f2f151c192d9a67ad679924f557d90  usr/share/doc/sddm-theme-debian-maui/changelog.Debian.gz
+34f6d6e533ea67886ce4216e77618531  usr/share/doc/sddm-theme-debian-maui/copyright
+f70de1bf4f981e098a0257c329e5c37f  usr/share/sddm/themes/debian-maui/Main.qml
+d8d1359a45fd11e05e1f13c8d175fd79  usr/share/sddm/themes/debian-maui/angle-down.png
+7daf5ee02273c95df2741847c41d4d17  usr/share/sddm/themes/debian-maui/angle-left.png
+f805a451e997d70dae37fe97611fc563  usr/share/sddm/themes/debian-maui/angle-right.png
+18dad2d0401aa3209f20e9be9f734d71  usr/share/sddm/themes/debian-maui/background.png
+bfff7fa91f44e4448873532cb51b9869  usr/share/sddm/themes/debian-maui/metadata.desktop
+02649828c03de1a9b7e9acbe52fc8f44  usr/share/sddm/themes/debian-maui/reboot.png
+4c2c0e12a3bfc166f139ea415043e649  usr/share/sddm/themes/debian-maui/shutdown.png
+12488f316411890019a876bdfae7c60d  usr/share/sddm/themes/debian-maui/theme.conf

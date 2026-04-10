@@ -1,0 +1,16 @@
+Package: sddm-theme-maui
+Source: sddm
+Version: 0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1
+Architecture: all
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Installed-Size: 479
+Depends: qml6-module-qtquick
+Recommends: sddm
+Breaks: sddm (<< 0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1)
+Provides: sddm-theme
+Section: kde
+Priority: optional
+Homepage: https://github.com/sddm/sddm
+Description: 'Maui' theme for SDDM X11 display manager
+ Maui theme for SDDM
+Original-Maintainer: Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>

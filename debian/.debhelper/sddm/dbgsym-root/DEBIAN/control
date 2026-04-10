@@ -1,0 +1,14 @@
+Package: sddm-dbgsym
+Package-Type: ddeb
+Source: sddm
+Version: 0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1
+Auto-Built-Package: debug-symbols
+Architecture: amd64
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Installed-Size: 11848
+Depends: sddm (= 0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1)
+Section: debug
+Priority: optional
+Description: debug symbols for sddm
+Build-Ids: 123ccd0624251ffcf9b054e488494408b689a4a9 1a35b9712a0d7261b26e1dd16a03d623b9ef8a6a 2d951b28aa0f96fdcf9130dec6d0364eba64f833 3cfcc679767a61457e74fc777ad21aca701b1fd5 6bdeeefa9826f7d0f16052c48b2155669acdbee4
+Original-Maintainer: Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>

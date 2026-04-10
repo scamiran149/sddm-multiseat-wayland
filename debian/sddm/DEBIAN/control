@@ -1,0 +1,18 @@
+Package: sddm
+Version: 0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1
+Architecture: amd64
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Installed-Size: 2152
+Depends: adduser, qml6-module-qtqml-workerscript, x11-common, xauth, xkb-data, xserver-xorg | xserver, debconf (>= 0.5) | debconf-2.0, qml6-module-qtquick, libc6 (>= 2.34), libgcc-s1 (>= 3.3.1), libpam0g (>= 0.99.7.1), libqt6core6t64 (>= 6.9.1), libqt6dbus6 (>= 6.8.2), libqt6gui6 (>= 6.1.2), libqt6network6 (>= 6.1.2), libqt6qml6 (>= 6.6.0), libqt6quick6 (>= 6.6.0), libstdc++6 (>= 14), libsystemd0, libxau6 (>= 1:1.0.11), libxcb-xkb1, libxcb1
+Recommends: libpam-systemd, sddm-theme-debian-breeze | sddm-theme
+Suggests: libpam-kwallet5
+Breaks: sddm-theme-breeze (<< 4:6.0.0~)
+Provides: x-display-manager
+Section: kde
+Priority: optional
+Homepage: https://github.com/sddm/sddm
+Description: modern display manager for X11
+ SDDM is a modern display manager for X11 aiming to be fast, simple
+ and beautiful. It uses modern technologies like QtQuick to create
+ smooth, animated user interfaces.
+Original-Maintainer: Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>

@@ -1,0 +1,7 @@
+#!/bin/sh
+# Xstop - run as root after stopping X
+
+if [ -e /sbin/prime-switch ]; then
+    echo running NVIDIA Prime switch /sbin/prime-switch
+    /sbin/prime-switch
+fi

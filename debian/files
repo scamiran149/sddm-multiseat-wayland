@@ -1,0 +1,9 @@
+sddm-dbgsym_0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1_amd64.ddeb debug optional architecture=amd64 automatic=yes
+sddm-theme-debian-elarun_0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1_all.deb kde optional architecture=all
+sddm-theme-debian-maui_0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1_all.deb kde optional architecture=all
+sddm-theme-elarun_0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1_all.deb kde optional architecture=all
+sddm-theme-maldives_0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1_all.deb kde optional architecture=all
+sddm-theme-maui_0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1_all.deb kde optional architecture=all
+sddm-theme-maya_0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1_all.deb kde optional architecture=all
+sddm_0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1_amd64.buildinfo kde optional
+sddm_0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1_amd64.deb kde optional architecture=amd64

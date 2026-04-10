@@ -1,0 +1,18 @@
+--- a/src/greeter/theme/Main.qml
++++ b/src/greeter/theme/Main.qml
+@@ -55,11 +55,12 @@ Rectangle {
+ 
+     Background {
+         anchors.fill: parent
+-        source: "qrc:///theme/background.png"
++        source: Qt.resolvedUrl(config.background)
+         fillMode: Image.PreserveAspectCrop
+         onStatusChanged: {
+-            if (status == Image.Error && source != config.defaultBackground) {
+-                source = config.defaultBackground
++            var defaultBackground = Qt.resolvedUrl(config.defaultBackground)
++            if (status == Image.Error && source != defaultBackground) {
++                source = defaultBackground
+             }
+         }
+ 

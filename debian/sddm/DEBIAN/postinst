@@ -1,0 +1,125 @@
+#!/bin/sh
+
+set -e
+
+. /usr/share/debconf/confmodule
+
+THIS_PACKAGE=sddm
+DEFAULT_DISPLAY_MANAGER_FILE=/etc/X11/default-display-manager
+
+# creating sddm group if he isn't already there
+if ! getent group sddm >/dev/null; then
+    addgroup --system sddm
+fi
+
+# creating sddm user if he isn't already there
+if ! getent passwd sddm >/dev/null; then
+    adduser --system --ingroup sddm --home /var/lib/sddm sddm
+    usermod -c "Simple Desktop Display Manager" sddm
+    usermod -d "/var/lib/sddm"                  sddm
+    usermod -g "sddm"                           sddm
+    usermod -s "/bin/false"                     sddm
+fi
+
+if [ ! -e /var/lib/sddm ]; then
+    # If sddm was purged while running, the home dir gets removed but the user
+    # remains (as deluser refuses to delete a user that's in use).
+    mkdir -p /var/lib/sddm
+fi
+
+if [ -d /var/lib/sddm ]; then
+    # There has been a -R in version prior to 0.19
+    # but this opens up symlink attacks. Remove it.
+    chown sddm:sddm /var/lib/sddm
+    chmod 0750 /var/lib/sddm
+fi
+
+# debconf is not a registry, so we only fiddle with the default file if it
+# does not exist
+if ! [ -e "$DEFAULT_DISPLAY_MANAGER_FILE" ]; then
+  DEFAULT_DISPLAY_MANAGER=
+  if db_get shared/default-x-display-manager; then
+    DEFAULT_DISPLAY_MANAGER="$RET"
+  fi
+  if [ -n "$DEFAULT_DISPLAY_MANAGER" ]; then
+    DAEMON_NAME=
+    if db_get "$DEFAULT_DISPLAY_MANAGER"/daemon_name; then
+      DAEMON_NAME="$RET"
+    fi
+    if [ -z "$DAEMON_NAME" ]; then
+      # if we were unable to determine the name of the selected daemon (for
+      # instance, if the selected default display manager doesn't provide a
+      # daemon_name question), guess
+      DAEMON_NAME=$(which "$DEFAULT_DISPLAY_MANAGER" 2>/dev/null)
+    fi
+    if [ -n "$DAEMON_NAME" ]; then
+      echo "$DAEMON_NAME" > "$DEFAULT_DISPLAY_MANAGER_FILE"
+    fi
+  fi
+fi
+
+# remove the displaced old default display manager file if it exists
+if [ -e "$DEFAULT_DISPLAY_MANAGER_FILE.dpkg-tmp" ]; then
+    rm "$DEFAULT_DISPLAY_MANAGER_FILE.dpkg-tmp"
+fi
+
+# debconf hangs if sddm gets started below without this
+db_stop || true
+
+if [ "$1" = "configure" ]; then
+    invoke-rc.d dbus reload || true
+fi
+
+DEFAULT_SERVICE=/etc/systemd/system/display-manager.service
+# set default-display-manager systemd service link according to our config
+if [ "$1" = configure ] && [ -d /etc/systemd/system/ ]; then
+    if [ -e "$DEFAULT_DISPLAY_MANAGER_FILE" ]; then
+        SERVICE=/lib/systemd/system/$(basename $(cat "$DEFAULT_DISPLAY_MANAGER_FILE")).service
+        if [ -h "$DEFAULT_SERVICE" ] && [ $(readlink "$DEFAULT_SERVICE") = /dev/null ]; then
+            echo "Display manager service is masked" >&2
+        elif [ -e "$SERVICE" ]; then
+            ln -sf "$SERVICE" "$DEFAULT_SERVICE"
+        else
+            echo "ERROR: $SERVICE is the selected default display manager but does not exist" >&2
+        fi
+    fi
+fi
+
+
+if [ -x /etc/init.d/sddm ]; then
+    update-rc.d sddm defaults >/dev/null 2>&1
+fi
+
+touch /var/log/sddm.log
+chown sddm:sddm /var/log/sddm.log
+
+# Automatically added by dh_installtmpfiles/13.24.2ubuntu1
+if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] || [ "$1" = "abort-deconfigure" ] || [ "$1" = "abort-remove" ] ; then
+	if [ -x "$(command -v systemd-tmpfiles)" ]; then
+		systemd-tmpfiles ${DPKG_ROOT:+--root="$DPKG_ROOT"} --create sddm.conf || true
+	fi
+fi
+# End automatically added section
+# Automatically added by dh_installdeb/13.24.2ubuntu1
+dpkg-maintscript-helper rm_conffile /etc/dbus-1/system.d/sddm_org.freedesktop.DisplayManager.conf 0.21.0-1\~ -- "$@"
+# End automatically added section
+# Automatically added by dh_installsystemd/13.24.2ubuntu1
+if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] || [ "$1" = "abort-deconfigure" ] || [ "$1" = "abort-remove" ] ; then
+	# The following line should be removed in trixie or trixie+1
+	deb-systemd-helper unmask 'sddm.service' >/dev/null || true
+
+	# was-enabled defaults to true, so new installations run enable.
+	if deb-systemd-helper --quiet was-enabled 'sddm.service'; then
+		# Enables the unit on first installation, creates new
+		# symlinks on upgrades if the unit file has changed.
+		deb-systemd-helper enable 'sddm.service' >/dev/null || true
+	else
+		# Update the statefile to add new symlinks (if any), which need to be
+		# cleaned up on purge. Also remove old symlinks.
+		deb-systemd-helper update-state 'sddm.service' >/dev/null || true
+	fi
+fi
+# End automatically added section
+
+
+exit 0

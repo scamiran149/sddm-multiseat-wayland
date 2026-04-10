@@ -1,0 +1,8 @@
+01_fix_background_conf_for_maui_theme.diff
+02_sddm_systemctl.diff
+03_use_debian_theme.diff
+04_set_default_path.diff
+05_add_debian_themes.diff
+06_nvidia_prime_setup.diff
+organize-screens-avoid-inset.patch
+use-bash-for-xsetup.patch

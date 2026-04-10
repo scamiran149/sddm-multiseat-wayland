@@ -1,0 +1,21 @@
+# Automatically added by dh_installdeb/13.24.2ubuntu1
+dpkg-maintscript-helper rm_conffile /etc/dbus-1/system.d/sddm_org.freedesktop.DisplayManager.conf 0.21.0-1\~ -- "$@"
+# End automatically added section
+# Automatically added by dh_installsystemd/13.24.2ubuntu1
+if [ "$1" = remove ] && [ -d /run/systemd/system ] ; then
+	systemctl --system daemon-reload >/dev/null || true
+fi
+# End automatically added section
+# Automatically added by dh_installsystemd/13.24.2ubuntu1
+if [ "$1" = "purge" ]; then
+	if [ -x "/usr/bin/deb-systemd-helper" ]; then
+		deb-systemd-helper purge 'sddm.service' >/dev/null || true
+	fi
+fi
+# End automatically added section
+# Automatically added by dh_installdebconf/13.24.2ubuntu1
+if [ "$1" = purge ] && [ -e /usr/share/debconf/confmodule ]; then
+	. /usr/share/debconf/confmodule
+	db_purge
+fi
+# End automatically added section

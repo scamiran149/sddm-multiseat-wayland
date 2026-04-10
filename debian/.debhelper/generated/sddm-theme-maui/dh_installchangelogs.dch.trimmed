@@ -1,0 +1,584 @@
+sddm (0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1) UNRELEASED; urgency=medium
+
+  [ Sherwin Amiran ]
+  * Add Wayland multiseat isolation support and fixes
+
+  [ scamiran149 ]
+  * Add Wayland multiseat isolation support and fixes
+
+ -- scamiran149 <scamiran149@users.noreply.github.com>  Thu, 09 Apr 2026 18:05:17 -0500
+
+sddm (0.21.0+git20250502.4fe234b-2ubuntu1) questing; urgency=medium
+
+  * Merge from Debian unstable. Remaining changes:
+    - Keep the default-display-manager file logic in sddm.postinst.
+    - Update Vcs-* to point to Launchpad instead of Salsa.
+    - Make sure sddm.service starts at the correct time.
+    - Instead of hardcoding the Breeze theme in, allow ubuntu-theme to be
+      used in the same fashion Debian's is.
+    - Patch to avoid screen overlap or inset.
+    - Patch Xsetup script to use bash. Allows previous patch to actually
+      run as it requires arrays.
+    - d/rules: Explicitly pass QML_INSTALL_DIR to cmake to fix FTBFS on arm64.
+
+ -- Rik Mills <rikmills@kde.org>  Sat, 09 Aug 2025 12:13:25 +0100
+
+sddm (0.21.0+git20250502.4fe234b-2) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * Stop recommending qt6-virtualkeyboard-plugin, it makes non-
+    virtualkeyboard aware themes unable to hide the virtual keyboard
+    which causes issues for all SDDM themes but KDE’s breeze. Instead
+    sddm-theme-breeze and sddm-theme-debian-breeze that can handle this
+    correctly were added that recommends in plasma-desktop 4:6.3.6-1. (Closes:
+    #1095604)
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Mon, 21 Jul 2025 08:57:40 +0200
+
+sddm (0.21.0+git20250502.4fe234b-1ubuntu1) questing; urgency=medium
+
+  * Merge from Debian Unstable. Remaining changes:
+    - Keep the default-display-manager file logic in sddm.postinst.
+    - Update Vcs-* to point to Launchpad instead of Salsa.
+    - Make sure sddm.service starts at the correct time.
+    - Instead of hardcoding the Breeze theme in, allow ubuntu-theme to be
+      used in the same fashion Debian's is.
+    - Patch to avoid screen overlap or inset.
+    - Patch Xsetup script to use bash. Allows previous patch to actually
+      run as it requires arrays.
+    - d/rules: Explicitly pass QML_INSTALL_DIR to cmake to fix FTBFS on arm64.
+
+ -- Rik Mills <rikmills@kde.org>  Sun, 15 Jun 2025 09:20:49 +0100
+
+sddm (0.21.0+git20250502.4fe234b-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream git snapshot (0.21.0+git20250502.4fe234b).
+  * Update build-deps and deps with the info from cmake.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sat, 03 May 2025 20:32:40 +0200
+
+sddm (0.21.0+git20250131.c2b97dd-2) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * Mark SddmComponents as optional for dh_qmldeps to fix the arch:all
+    build. (Closes: 1099481)
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Tue, 04 Mar 2025 07:38:00 +0100
+
+sddm (0.21.0+git20250131.c2b97dd-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * Rebuild for the qt6-declarative transition.
+  * New upstream git snapshot with updated translations
+    (0.21.0+git20250131.c2b97dd).
+  * Bump Standards-Version to 4.7.2, no change required.
+  * Switch to declarative KF6 debhelper build sequence.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Mon, 03 Mar 2025 08:37:18 +0100
+
+sddm (0.21.0+git20241213.4a9aa2e-1ubuntu2) plucky; urgency=medium
+
+  * Bump Standards-Version to 4.7.1, no changes needed.
+  * Drop several Xorg Depends, these should be picked up elsewhere if truly
+    needed.
+  * Add a basic autopkgtest.
+
+ -- Simon Quigley <tsimonq2@ubuntu.com>  Fri, 21 Feb 2025 21:57:11 -0600
+
+sddm (0.21.0+git20241213.4a9aa2e-1ubuntu1) plucky; urgency=medium
+
+  * Merge from Debian Unstable, remaining changes:
+    - Keep the default-display-manager file logic in sddm.postinst.
+    - Update Vcs-* to point to Launchpad instead of Salsa.
+    - Make sure sddm.service starts at the correct time.
+    - Instead of hardcoding the Breeze theme in, allow ubuntu-theme to be
+      used in the same fashion Debian's is.
+    - Patch to avoid screen overlap or inset.
+    - Patch Xsetup script to use bash. Allows previous patch to actually
+      run as it requires arrays.
+    - d/rules: Explicitly pass QML_INSTALL_DIR to cmake to fix FTBFS on arm64.
+  * Refresh patches.
+
+ -- Simon Quigley <tsimonq2@ubuntu.com>  Tue, 24 Dec 2024 20:50:28 -0600
+
+sddm (0.21.0+git20241213.4a9aa2e-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * Sddm breaks sddm-theme-breeze versions earlier than 6.x.
+  * New upstream git snapshot (0.21.0+git20241213.4a9aa2e). (Closes:
+    #1089211, #1088277) (That commit is actually from 20241108.)
+  * Refresh patches.
+  * Upstream dropped its debian-specific PAM conf files that we were
+    overriding anyway.
+  * Add patch to make Maui theme’s background configurable.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Mon, 23 Dec 2024 18:54:29 +0100
+
+sddm (0.21.0-6ubuntu1) plucky; urgency=medium
+
+  * Merge from Debian Unstable, remaining changes:
+    - Keep the default-display-manager file logic in sddm.postinst.
+    - Update Vcs-* to point to Launchpad instead of Salsa.
+    - Make sure sddm.service starts at the correct time.
+    - Instead of hardcoding the Breeze theme in, allow ubuntu-theme to be
+      used in the same fashion Debian's is.
+    - Patch to avoid screen overlap or inset.
+    - Patch Xsetup script to use bash. Allows previous patch to actually
+      run as it requires arrays.
+    - d/rules: Explicitly pass QML_INSTALL_DIR to cmake to fix FTBFS on arm64.
+  * Use ${qml6:Depends} in binary package depends.
+
+ -- Simon Quigley <tsimonq2@ubuntu.com>  Sat, 14 Dec 2024 17:15:52 -0600
+
+sddm (0.21.0-6) unstable; urgency=medium
+
+  * Team upload.
+  * Update the recommended virtual keyboard plugin to qt6-virtualkeyboard-plugin
+
+ -- Salvo 'LtWorf' Tomaselli <ltworf@debian.org>  Sat, 14 Dec 2024 23:08:50 +0100
+
+sddm (0.21.0-5) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * Release to unstable.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sun, 24 Nov 2024 23:10:36 +0100
+
+sddm (0.21.0-4ubuntu4) plucky; urgency=medium
+
+  * Drop depreciated qml6-module-qtqml-base depends.
+
+ -- Rik Mills <rikmills@kde.org>  Mon, 09 Dec 2024 15:32:03 +0000
+
+sddm (0.21.0-4ubuntu3) plucky; urgency=medium
+
+  * No-change rebuild for Qt 6.8.1.
+
+ -- Simon Quigley <tsimonq2@ubuntu.com>  Sun, 08 Dec 2024 18:11:32 -0600
+
+sddm (0.21.0-4ubuntu2) plucky; urgency=medium
+
+  * Revert the login -> login.defs build dependency change, this has not yet
+    landed in Ubuntu.
+
+ -- Simon Quigley <tsimonq2@ubuntu.com>  Sat, 02 Nov 2024 22:14:35 -0500
+
+sddm (0.21.0-4ubuntu1) plucky; urgency=medium
+
+  * Merge from Debian Experimental, remaining changes:
+    - Keep the default-display-manager file logic in sddm.postinst.
+    - Update Vcs-* to point to Launchpad instead of Salsa.
+    - Make sure sddm.service starts at the correct time.
+    - Instead of hardcoding the Breeze theme in, allow ubuntu-theme to be
+      used in the same fashion Debian's is.
+    - Patch to avoid screen overlap or inset.
+    - Patch Xsetup script to use bash. Allows previous patch to actually
+      run as it requires arrays.
+    - d/rules: Explicitly pass QML_INSTALL_DIR to cmake to fix FTBFS on arm64.
+
+ -- Simon Quigley <tsimonq2@ubuntu.com>  Sat, 02 Nov 2024 21:24:11 -0500
+
+sddm (0.21.0-4) experimental; urgency=medium
+
+  * Team upload.
+  * Drop obsolete reference to example sddm.conf in README.Debian because
+    upstream no longer provides a pregenerated example configuration (Closes:
+    #911961, #1081684).
+  * Add login.defs to Build-Depends because "login" is not part of
+    build-essential in trixie, and because login might drop its login.defs
+    dependency in forky.  Thanks to Santiago Vila and Chris Hofstaedtler
+    (Closes: #1078320).
+
+ -- Nicholas D Steeves <sten@debian.org>  Sun, 20 Oct 2024 20:48:44 -0400
+
+sddm (0.21.0-3) experimental; urgency=medium
+
+  [ Patrick Franz ]
+  * Team upload.
+  * Move qtvirtualkeyboard-plugin from Suggests to Recommends for easier
+    login on tablets.
+  * Add missing QML dependencies.
+
+ -- Patrick Franz <deltaone@debian.org>  Thu, 05 Sep 2024 18:24:07 +0200
+
+sddm (0.21.0-2) experimental; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * Build against Qt6.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Fri, 12 Jul 2024 01:00:55 +0200
+
+sddm (0.21.0-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Build-Depend on login so cmake can find and see the /etc/login.defs file.
+    Just specifying it with -DLOGIN_DEFS_PATH is not enough. (Closes: #1078320)
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sun, 20 Oct 2024 19:52:26 +0200
+
+sddm (0.21.0-1ubuntu4) oracular; urgency=medium
+
+  * debian/patches: Drop revert_prefer-wayland-sessions-over-X11.patch
+
+ -- Rik Mills <rikmills@kde.org>  Mon, 09 Sep 2024 06:48:11 +0100
+
+sddm (0.21.0-1ubuntu3) oracular; urgency=medium
+
+  * d/rules: Explicitly pass QML_INSTALL_DIR to cmake to fix FTBFS on
+    arm64.
+
+ -- Rik Mills <rikmills@kde.org>  Thu, 15 Aug 2024 10:11:52 +0100
+
+sddm (0.21.0-1ubuntu2) oracular; urgency=medium
+
+  [ Simon Quigley ]
+  * Build with Qt 6 instead of Qt 5.
+
+ -- Rik Mills <rikmills@kde.org>  Wed, 03 Jul 2024 09:53:36 -0500
+
+sddm (0.21.0-1ubuntu1) oracular; urgency=medium
+
+  * Merge from Debian unstable. Remaining changes:
+    - Keep the default-display-manager file logic in sddm.postinst.
+    - Update Vcs-* to point to Launchpad instead of Salsa.
+    - Make sure sddm.service starts at the correct time.
+    - Instead of hardcoding the Breeze theme in, allow ubuntu-theme to be
+      used in the same fashion Debian's is.
+    - Revert upstream change prefering wayland sessions.
+      + debian/patches: revert_prefer-wayland-sessions-over-X11.patch
+      + Refresh the above patch.
+    - Patch to avoid screen overlap or inset.
+    - Patch Xsetup script to use bash. Allows previous patch to actually
+      run as it requires arrays.
+
+ -- Rik Mills <rikmills@kde.org>  Thu, 16 May 2024 01:59:43 +0100
+
+sddm (0.21.0-1) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Pino Toscano ]
+  * New upstream release:
+    - the D-Bus policy file is installed in /usr now (Closes: #1041237)
+  * Update install files.
+  * Remove the old /etc/dbus-1/system.d/sddm_org.freedesktop.DisplayManager.conf
+    conffile.
+  * Disable fixfilepath reproducibility feature, as it triggers build failures
+    when enabled.
+  * Switch the transitional pkg-config build dependency to pkgconf.
+  * Switch the systemd build dependency to systemd-dev (Closes: #1060590);
+    note that the libsystemd-dev build dependency is kept, as sddm uses
+    libsystemd.
+  * Bump Standards-Version to 4.7.0, no change required.
+  * Drop the libupower-glib-dev build dependency, no more used.
+
+  [ Atila KOÇ ]
+  * Turkish debconf translation update. (Closes: #1032309)
+
+ -- Pino Toscano <pino@debian.org>  Sun, 12 May 2024 12:05:56 +0200
+
+sddm (0.20.0-2ubuntu4) noble; urgency=high
+
+  * No change rebuild against libqt5core5t64, libqt5dbus5t64,
+    libqt5gui5t64, libqt5network5t64.
+
+ -- Julian Andres Klode <juliank@ubuntu.com>  Mon, 08 Apr 2024 16:49:55 +0200
+
+sddm (0.20.0-2ubuntu3) noble; urgency=medium
+
+  * No-change rebuild for CVE-2024-3094
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Sun, 31 Mar 2024 17:12:06 +0000
+
+sddm (0.20.0-2ubuntu2) noble; urgency=medium
+
+  * No-change rebuild against libqt5core5t64
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Fri, 15 Mar 2024 07:04:10 +0000
+
+sddm (0.20.0-2ubuntu1) noble; urgency=medium
+
+  * Merge from Debian unstable. Remaining changes:
+    - Keep the default-display-manager file logic in sddm.postinst.
+    - Update Vcs-* to point to Launchpad instead of Salsa.
+    - Make sure sddm.service starts at the correct time.
+    - Instead of hardcoding the Breeze theme in, allow ubuntu-theme to be
+      used in the same fashion Debian's is.
+    - Revert upstream change prefering wayland sessions.
+      + debian/patches: revert_prefer-wayland-sessions-over-X11.patch
+      + Refresh the above patch.
+    - Patch to avoid screen overlap or inset.
+    - Patch Xsetup script to use bash. Allows previous patch to actually
+      run as it requires arrays.
+
+ -- Rik Mills <rikmills@kde.org>  Mon, 11 Dec 2023 11:52:38 +0000
+
+sddm (0.20.0-2) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Pino Toscano ]
+  * Add the xkb-data dependency, needed for the X11 xkb rules.
+  * Remove an obsolete maintscript entry.
+
+  [ Patrick Franz ]
+  * Fix FTBFS: Also ignore /usr-moved upstream systemd unit, thx to
+    Helmut Grohne (Closes: #1057338).
+
+ -- Patrick Franz <deltaone@debian.org>  Mon, 04 Dec 2023 22:08:35 +0100
+
+sddm (0.20.0-1ubuntu1) mantic; urgency=medium
+
+  * Merge from Debian unstable. Remaining changes:
+    - Keep the default-display-manager file logic in sddm.postinst.
+    - Update Vcs-* to point to Launchpad instead of Salsa.
+    - Make sure sddm.service starts at the correct time.
+    - Instead of hardcoding the Breeze theme in, allow ubuntu-theme to be
+      used in the same fashion Debian's is.
+    - Revert upstream change prefering wayland sessions.
+      + debian/patches: revert_prefer-wayland-sessions-over-X11.patch
+      + Refresh the above patch.
+    - Patch to avoid screen overlap or inset.
+    - Patch Xsetup script to use bash. Allows previous patch to actually
+      run as it requires arrays,
+
+ -- Rik Mills <rikmills@kde.org>  Thu, 29 Jun 2023 14:30:54 +0100
+
+sddm (0.20.0-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (0.20.0).
+  * Update build-deps and deps with the info from cmake.
+  * Bump Standards-Version to 4.6.2, no change required.
+  * Refresh patches.
+  * Drop patch 03_vt7-minimum-vt.diff and switch back to upstream default of
+    spawning greeter on VT1.
+  * Drop patches applied upstream.
+  * Refresh the list of installed files.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Sat, 24 Jun 2023 08:38:52 +0200
+
+sddm (0.19.0-5ubuntu1) mantic; urgency=medium
+
+  * Merge from Debian unstable. Remaining changes:
+    - Add kubuntu_nvidia-prime.diff to make sure NVIDIA Prime works.
+    - Keep the default-display-manager file logic in sddm.postinst.
+    - Update Vcs-* to point to Launchpad instead of Salsa.
+    - Add debian/conffiles.
+    - Make sure sddm.service starts at the correct time.
+    - Start on tty1 by default.
+    - Instead of hardcoding the Breeze theme in, allow ubuntu-theme to be
+      used in the same fashion Debian's is.
+    - Revert upstream change prefering wayland sessions.
+      + debian/patches: revert_prefer-wayland-sessions-over-X11.patch
+    - Patch to avoid screen overlap or inset.
+    - Patch Xsetup script to use bash. Allows previous patch to actually
+      run as it requires arrays
+
+ -- Rik Mills <rikmills@kde.org>  Mon, 26 Jun 2023 10:09:31 +0100
+
+sddm (0.19.0-5) unstable; urgency=medium
+
+  * Drop haveged from recommends, it used to be necessary to gather enough
+    entropy to avoid freezes during boot but this hasn’t been the case anymore
+    for many kernel releases.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Mon, 20 Feb 2023 22:51:20 +0100
+
+sddm (0.19.0-4) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Norbert Preining ]
+  * Recommend sddm-theme-debian-breeze instead of maui (Closes: #949340).
+    The alternatives system gives this theme the highest priority, so install
+    it by default.
+
+  [ Pino Toscano ]
+  * Remove inactive Uploaders.
+  * Backport upstream commit e93bf95c54ad8c2a1604f8d7be05339164b19308 to fix
+    build with newer versions of Qt 5.15; patch
+    upstream_Fix-compilation-once-QTBUG-88431-gets-fixed.patch.
+    (Closes: #1013550)
+  * Update lintian overrides.
+  * Use /usr/share/dpkg/architecture.mk instead of querying the $DEB_HOST_*
+    variables manually.
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+  * Update standards version to 4.6.1, no changes needed.
+  * Remove the upstream sddm.service in execute_after_dh_auto_install, rather
+    than execute_before_dh_install; same effect, mostly a better place
+    logically.
+  * Use execute_after_dh_fixperms-arch, and execute_after_dh_installpam to avoid
+    invoking dh_fixperms, and dh_installpam manually.
+
+ -- Pino Toscano <pino@debian.org>  Sun, 09 Oct 2022 10:30:14 +0200
+
+sddm (0.19.0-3ubuntu3) lunar; urgency=medium
+
+  * Patch Xsetup script to use bash (LP: #2009074)
+    - Allows previous patch to actually run as it
+      requires arrays
+
+ -- Erich Eickmeyer <eeickmeyer@ubuntu.com>  Thu, 02 Mar 2023 11:26:21 -0800
+
+sddm (0.19.0-3ubuntu2) lunar; urgency=medium
+
+  * Patch to avoid screen overlap or inset (LP: #1998254)
+
+ -- Erich Eickmeyer <eeickmeyer@ubuntu.com>  Tue, 29 Nov 2022 13:34:07 -0800
+
+sddm (0.19.0-3ubuntu1) kinetic; urgency=medium
+
+  * Merge from Debian unstable. Remaining changes:
+    - Add kubuntu_nvidia-prime.diff to make sure NVIDIA Prime works.
+    - Keep the default-display-manager file logic in sddm.postinst.
+    - Update Vcs-* to point to Launchpad instead of Salsa.
+    - Add debian/conffiles.
+    - Make sure sddm.service starts at the correct time.
+    - Start on tty1 by default.
+    - Instead of hardcoding the Breeze theme in, allow ubuntu-theme to be
+      used in the same fashion Debian's is.
+    - Revert upstream change prefering wayland sessions.
+      + debian/patches: revert_prefer-wayland-sessions-over-X11.patch
+    - Add sddm-fix-build.patch
+
+ -- Rik Mills <rikmills@kde.org>  Tue, 12 Jul 2022 12:19:39 +0100
+
+sddm (0.19.0-3) unstable; urgency=medium
+
+  * Cherry-pick upstream commit to re-add sourcing of /etc/profile and
+    $HOME/.profile for users with fish as their default shell.
+
+ -- Aurélien COUDERC <coucouf@debian.org>  Wed, 17 Mar 2021 22:41:58 +0100
+
+sddm (0.19.0-2ubuntu2) hirsute; urgency=medium
+
+  * Revert upstream change prefering wayland sessions.
+    - debian/patches: revert_prefer-wayland-sessions-over-X11.patch
+
+ -- Rik Mills <rikmills@kde.org>  Thu, 18 Feb 2021 17:33:00 +0000
+
+sddm (0.19.0-2ubuntu1) hirsute; urgency=medium
+
+  * Merge from Debian unstable. Remaining changes:
+    - Add kubuntu_nvidia-prime.diff to make sure NVIDIA Prime works.
+    - Keep the default-display-manager file logic in sddm.postinst.
+    - Update Vcs-* to point to Launchpad instead of Salsa.
+    - Add debian/conffiles.
+    - Make sure sddm.service starts at the correct time.
+    - Start on tty1 by default.
+    - Instead of hardcoding the Breeze theme in, allow ubuntu-theme to be
+      used in the same fashion Debian's is.
+
+ -- Rik Mills <rikmills@kde.org>  Sun, 15 Nov 2020 11:53:51 +0000
+
+sddm (0.19.0-2) unstable; urgency=medium
+
+  [ Norbert Preining ]
+  * Disable 07_fix-desktop-session-env-var.diff imported from Ubuntu
+    (Closes: #973907)
+  * Add upstream's d/p/upstream-2f034906d-use-only-basename-of-session to
+    use only the basename of the session file as session name.
+
+ -- Norbert Preining <norbert@preining.info>  Tue, 10 Nov 2020 04:38:45 +0900
+
+sddm (0.19.0-1) unstable; urgency=medium
+
+  [ Aurélien COUDERC ]
+  * New upstream release (0.19.0):
+    - Fix X not having access control on startup (fixes CVE-2020-28049)
+  * Fix lintian warning command-with-path-in-maintainer-script in postrm.
+  * Sync patches with Kubuntu.
+  * Switch to UTF-8 encoding for Swedish po translation.
+  * Review copyright information.
+  * Build with hardening=+all build hardening flag.
+  * Mark watch file as version=4, no change required.
+  * Don’t install LICENSE files from source, their contents is already in
+    d/copyright.
+  * Install upstream README files to /usr/share/doc.
+  * Disable lintian warning for Maya theme’s font license, the source gives a
+    plausible source and license that are redistribuable.
+  * Bump Standards-Version to 4.5.0:
+    - Add Rules-Requires-Root: no
+  * Switch from the debhelper build dependency to debhelper-compat
+    - remove debian/compat
+    - bump compatibility level to 13
+
+  [ Norbert Preining ]
+  * Bump build-depends according to CMakeLists.
+  * Add Aurélien and myself to uploaders.
+  * Change maintainer to Debian Qt/KDE ...
+  * Don't do recursive change of ownership of /var/lib/sddm in d/sddm.postinst
+
+ -- Norbert Preining <norbert@preining.info>  Sat, 07 Nov 2020 09:28:39 +0900
+
+sddm (0.18.1-1ubuntu3) groovy; urgency=medium
+
+  * debian/conffiles: Switch to using absolute paths, which are now
+    being enforced by the latest dpkg. (LP: #1891068)
+
+ -- Rik Mills <rikmills@kde.org>  Thu, 13 Aug 2020 07:43:10 +0100
+
+sddm (0.18.1-1ubuntu2) focal; urgency=medium
+
+  * Revert upstream_set-re-use-session-option-by-default.diff
+
+ -- Rik Mills <rikmills@kde.org>  Tue, 25 Feb 2020 15:44:32 +0000
+
+sddm (0.18.1-1ubuntu1) focal; urgency=medium
+
+  * Merge from Debian unstable. Remaining changes:
+    - Recommend the Breeze SDDM theme instead of the Maui one.
+    - Add kubuntu_nvidia-prime.diff to make sure NVIDIA Prime works.
+    - Keep the default-display-manager file logic in sddm.postinst.
+    - Update Vcs-* to point to Launchpad instead of Salsa.
+    - Add debian/conffiles.
+    - Make sure sddm.service starts at the correct time.
+    - Start on tty1 by default.
+    - Bump Standards-version to 4.1.5, no changes needed.
+    - Instead of hardcoding the Breeze theme in, allow ubuntu-theme to be
+      used in the same fashion Debian's is.
+  * Add upstream_set-re-use-session-option-by-default.diff
+
+ -- Rik Mills <rikmills@kde.org>  Mon, 24 Feb 2020 08:17:37 +0000
+
+sddm (0.18.1-1) unstable; urgency=medium
+
+  * Team upload.
+
+  [ Maximiliano Curia ]
+  * Add missing license paragraph
+  * Add wayland-session as a conffile
+  * Avoid sourcing /etc/profile with fish.
+    Thanks to Alf Gaida for the report (Closes: 904698)
+
+  [ Pino Toscano ]
+  * New upstream release.
+  * Add the configuration for the CI on salsa.
+  * Remove the unused debian/meta/ stuff.
+  * Remove debian/not-installed, as we ship everything.
+  * Switch from python-docutils to python3-docutils to get Python 3-based
+    rst2man. (Closes: #943206)
+  * Small changes to copyright.
+  * Drop the upstart confirmation, as it is long gone
+    - unregister it as conffile
+  * Depend on xauth, as it is used for X sessions. (Closes: #929463)
+  * Change sid to unstable in old changelog entries. (Closes: #901969)
+  * Improve the Debian-provided sddm.service: (Closes: #916398, #950391)
+    - remove old check of /etc/X11/default-display-manager
+    - alias it as display-manager.service
+    - add getty@tty1.service to Conflicts/After to avoid races
+
+  [ Lorenzo Puliti ]
+  * Improve sysv init script: (Closes: #915534)
+    - add dbus under 'Should Start'
+    - remove  'S' and 'K' update-rc.d levels from postinst script,
+      as setting the boot sequence that way is deprecated and no longer
+      effective
+
+ -- Pino Toscano <pino@debian.org>  Sun, 23 Feb 2020 13:34:38 +0100
+
+# Older entries have been removed from this changelog.
+# To read the complete changelog use `apt changelog sddm-theme-maui`.

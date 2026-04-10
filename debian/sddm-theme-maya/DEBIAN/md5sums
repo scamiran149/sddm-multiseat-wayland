@@ -1,0 +1,15 @@
+2279f03901ee9fec76371011ac5c558b  usr/share/doc/sddm-theme-maya/README
+f6af37608e936b2dcda84395dfac11ac  usr/share/doc/sddm-theme-maya/changelog.Debian.gz
+34f6d6e533ea67886ce4216e77618531  usr/share/doc/sddm-theme-maya/copyright
+0e86fc1612f877fdd9b22dfd8d3eb667  usr/share/lintian/overrides/sddm-theme-maya
+296fb3c5c7d4c6addb0651d1750c35c2  usr/share/sddm/themes/maya/Main.qml
+2b7b381505d82e21144c769a4593f02f  usr/share/sddm/themes/maya/components/SpButton.qml
+9c2c67e2ab7a52e12ccf292de9452aac  usr/share/sddm/themes/maya/components/SpClock.qml
+78a0d7e644be8aa2110679f957a5b0db  usr/share/sddm/themes/maya/fonts/OpenSans_CondLight.ttf
+7caa90a5f543b21ce59337dad7154124  usr/share/sddm/themes/maya/images/ic_arrow_drop_down_white_24px.svg
+387241b026463d90fb3420d9cd08a85f  usr/share/sddm/themes/maya/images/ic_power_settings_new_white_24px.svg
+f73272d4efd233a85e8c649d26126f01  usr/share/sddm/themes/maya/images/ic_refresh_white_24px.svg
+12cd8f85ef055fcace576299eba4b4e9  usr/share/sddm/themes/maya/images/ic_warning_white_24px.svg
+2bc3db2e13f7397ef60aaed7cbdf08a8  usr/share/sddm/themes/maya/metadata.desktop
+dd80d0f652c509c28e3fd4a69c911c96  usr/share/sddm/themes/maya/screenshots/hi_IN.png
+08e27b7e8c889783a998db35b0013abe  usr/share/sddm/themes/maya/theme.conf

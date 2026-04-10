@@ -1,0 +1,9 @@
+/usr/share/sddm/scripts/Xsetup
+/usr/share/sddm/scripts/Xsession
+/usr/share/sddm/scripts/Xstop
+/etc/init.d/sddm
+/etc/pam.d/sddm
+/etc/pam.d/sddm-autologin
+/etc/pam.d/sddm-greeter
+/etc/sddm/Xsession
+/etc/sddm/wayland-session

@@ -1,0 +1,106 @@
+Source: sddm
+Section: kde
+Priority: optional
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Debian Qt/KDE Maintainers <debian-qt-kde@lists.debian.org>
+Uploaders: Aurélien COUDERC <coucouf@debian.org>,
+Build-Depends: debhelper-compat (= 13),
+               dh-sequence-qmldeps,
+               cmake (>= 3.5~),
+               libpam0g-dev,
+               libsystemd-dev [linux-any],
+               libxau-dev,
+               libxcb-xkb-dev,
+               libxcb1-dev,
+               libxkbcommon-dev,
+               login,
+               pkgconf,
+               python3-docutils,
+               qml6-module-qtqml-workerscript,
+               qml6-module-qtquick-window,
+               qt6-base-dev,
+               qt6-declarative-dev,
+               qt6-tools-dev,
+               systemd-dev [linux-any],
+Standards-Version: 4.7.2
+Homepage: https://github.com/sddm/sddm
+Vcs-Browser: https://git.launchpad.net/~ubuntu-qt-code/+git/sddm
+Vcs-Git: https://git.launchpad.net/~ubuntu-qt-code/+git/sddm
+Rules-Requires-Root: no
+
+Package: sddm
+Architecture: any
+Depends: adduser,
+         qml6-module-qtqml-workerscript,
+         x11-common,
+         xauth,
+         xkb-data,
+         xserver-xorg | xserver,
+         ${misc:Depends},
+         ${qml6:Depends},
+         ${shlibs:Depends},
+Recommends: libpam-systemd,
+            sddm-theme-debian-breeze | sddm-theme,
+Suggests: libpam-kwallet5,
+Breaks: sddm-theme-breeze (<< 4:6.0.0~),
+Provides: x-display-manager,
+Description: modern display manager for X11
+ SDDM is a modern display manager for X11 aiming to be fast, simple
+ and beautiful. It uses modern technologies like QtQuick to create
+ smooth, animated user interfaces.
+
+Package: sddm-theme-debian-elarun
+Architecture: all
+Depends: desktop-base, ${misc:Depends}, ${qml6:Depends},
+Recommends: sddm,
+Provides: sddm-theme,
+Breaks: sddm (<< ${source:Version}),
+Description: 'Debian Elarun' Theme for SDDM X11 display manager
+ Elarun theme for SDDM, using the active desktop-base theme for the
+ background.
+
+Package: sddm-theme-debian-maui
+Architecture: all
+Depends: desktop-base, ${misc:Depends}, ${qml6:Depends},
+Recommends: sddm,
+Provides: sddm-theme,
+Breaks: sddm (<< ${source:Version}),
+Description: 'Debian Maui' theme for SDDM X11 display manager
+ Maui theme for SDDM, using the active desktop-base theme for the
+ background
+
+Package: sddm-theme-elarun
+Architecture: all
+Depends: ${misc:Depends}, ${qml6:Depends},
+Recommends: sddm,
+Provides: sddm-theme,
+Breaks: sddm (<< ${source:Version}),
+Description: 'Elarun' Theme for SDDM X11 display manager
+ Elarun theme for SDDM
+
+Package: sddm-theme-maldives
+Architecture: all
+Depends: ${misc:Depends}, ${qml6:Depends},
+Breaks: sddm (<< ${source:Version}),
+Recommends: sddm,
+Provides: sddm-theme,
+Description: 'Maldives' theme for SDDM X11 display manager
+ Maldives theme for SDDM
+
+Package: sddm-theme-maui
+Architecture: all
+Depends: ${misc:Depends}, ${qml6:Depends},
+Recommends: sddm,
+Provides: sddm-theme,
+Breaks: sddm (<< ${source:Version}),
+Description: 'Maui' theme for SDDM X11 display manager
+ Maui theme for SDDM
+
+Package: sddm-theme-maya
+Architecture: all
+Depends: ${misc:Depends}, ${qml6:Depends},
+Recommends: sddm,
+Provides: sddm-theme,
+Breaks: sddm (<< ${source:Version}),
+Description: 'Maya' theme for SDDM X11 display manager
+ Maya theme for SDDM

@@ -1,3 +1,8 @@
 /build/
+/obj-x86_64-linux-gnu/
+/packaging/
+.opencode/
 *~
 *.user
+/tools/seat-telemetry/*.log
+/tools/seat-telemetry/local/
