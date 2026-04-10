@@ -25,6 +25,12 @@ set(GREETER_SOURCES
     ${CMAKE_SOURCE_DIR}/src/common/ThemeMetadata.cpp
     GreeterApp.cpp
     GreeterProxy.cpp
+    IdleController.cpp
+    IdleController.h
+    Login1IdleHint.cpp
+    Login1IdleHint.h
+    DpmsManager.cpp
+    DpmsManager.h
     KeyboardLayout.cpp
     KeyboardModel.cpp
     ScreenModel.cpp
@@ -43,6 +49,7 @@ qt_add_resources(RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/theme.qrc)
 add_executable(${GREETER_TARGET} ${GREETER_SOURCES} ${RESOURCES})
 target_link_libraries(${GREETER_TARGET}
                       Qt${QT_MAJOR_VERSION}::Quick
+                      Qt${QT_MAJOR_VERSION}::DBus
                       ${LIBXCB_LIBRARIES}
                       ${LIBXKB_LIBRARIES})
 

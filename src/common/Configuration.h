@@ -87,6 +87,28 @@ namespace SDDM {
             Entry(EnableHiDPI,         bool,        true,                                       _S("Enable Qt's automatic high-DPI scaling"));
         );
 
+        Section(GreeterIdle,
+            Entry(IdleTimeout,         int,         600,                                        _S("Seconds of inactivity before the greeter is considered idle.\n"
+                                                                                                   "When idle, the screen is powered off and the logind idle hint is set.\n"
+                                                                                                   "Set to 0 to disable idle handling."));
+            Entry(DpmsOffService,      QString,     QString(),                                 _S("D-Bus service for the DPMS off call.\n"
+                                                                                                   "When empty, the built-in KWin default is used."));
+            Entry(DpmsOffPath,         QString,     QString(),                                 _S("D-Bus object path for the DPMS off call.\n"
+                                                                                                   "When empty, the built-in KWin default is used."));
+            Entry(DpmsOffInterface,    QString,     QString(),                                 _S("D-Bus interface for the DPMS off call.\n"
+                                                                                                   "When empty, the built-in KWin default is used."));
+            Entry(DpmsOffMethod,       QString,     QString(),                                 _S("D-Bus method for the DPMS off call.\n"
+                                                                                                   "When empty, the built-in KWin default is used."));
+            Entry(DpmsOnService,       QString,     QString(),                                 _S("D-Bus service for the DPMS on call.\n"
+                                                                                                   "When empty, the built-in KWin default is used."));
+            Entry(DpmsOnPath,          QString,     QString(),                                 _S("D-Bus object path for the DPMS on call.\n"
+                                                                                                   "When empty, the built-in KWin default is used."));
+            Entry(DpmsOnInterface,     QString,     QString(),                                 _S("D-Bus interface for the DPMS on call.\n"
+                                                                                                   "When empty, the built-in KWin default is used."));
+            Entry(DpmsOnMethod,        QString,     QString(),                                 _S("D-Bus method for the DPMS on call.\n"
+                                                                                                   "When empty, the built-in KWin default is used."));
+        );
+
         Section(Users,
             Entry(DefaultPath,         QString,     _S("/usr/local/bin:/usr/bin:/bin"),         _S("Default $PATH for logged in users"));
             Entry(MinimumUid,          int,         UID_MIN,                                    _S("Minimum user id for displayed users"));

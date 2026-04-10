@@ -246,6 +246,56 @@ The `UserAuthFile=` option was removed, the file is always created as
 	only the first time.
 	Default value is false.
 
+[GreeterIdle] section:
+
+`IdleTimeout=`
+	Seconds of inactivity before the greeter is considered idle.
+	When idle, the screen is powered off (via DPMS) and the logind
+	session idle hint is set to true. When user activity resumes,
+	the screen is powered on and the idle hint is set to false.
+	Set to 0 to disable idle handling entirely.
+	Default value is 600 (10 minutes).
+
+`DpmsOffService=`
+	D-Bus service name for the screen-off call when the greeter goes idle.
+	When empty, the built-in KWin default is used.
+	When all four DpmsOff fields (Service, Path, Interface, Method) are
+	specified, they override the built-in default.
+	Partial overrides are ignored and the built-in default is used instead.
+	Default value is empty (uses built-in default: org.kde.KWin /ScreenSaver org.freedesktop.ScreenSaver SetActive with argument true).
+
+`DpmsOffPath=`
+	D-Bus object path for the screen-off call.
+	Default value is empty.
+
+`DpmsOffInterface=`
+	D-Bus interface name for the screen-off call.
+	Default value is empty.
+
+`DpmsOffMethod=`
+	D-Bus method name for the screen-off call.
+	Default value is empty.
+
+`DpmsOnService=`
+	D-Bus service name for the screen-on call when the greeter resumes from idle.
+	When empty, the built-in KWin default is used.
+	When all four DpmsOn fields (Service, Path, Interface, Method) are
+	specified, they override the built-in default.
+	Partial overrides are ignored and the built-in default is used instead.
+	Default value is empty.
+
+`DpmsOnPath=`
+	D-Bus object path for the screen-on call.
+	Default value is empty.
+
+`DpmsOnInterface=`
+	D-Bus interface name for the screen-on call.
+	Default value is empty.
+
+`DpmsOnMethod=`
+	D-Bus method name for the screen-on call.
+	Default value is empty.
+
 SEE ALSO
 ========
 

@@ -36,6 +36,9 @@ namespace SDDM {
     class UserModel;
     class GreeterProxy;
     class KeyboardModel;
+    class IdleController;
+    class Login1IdleHint;
+    class DpmsManager;
 
 
     class GreeterApp : public QObject
@@ -56,6 +59,7 @@ namespace SDDM {
 
     protected:
         void customEvent(QEvent *event) override;
+        bool eventFilter(QObject *watched, QEvent *event) override;
 
     private slots:
         void addViewForScreen(QScreen *screen);
@@ -76,6 +80,10 @@ namespace SDDM {
         UserModel *m_userModel { nullptr };
         GreeterProxy *m_proxy { nullptr };
         KeyboardModel *m_keyboard { nullptr };
+
+        IdleController *m_idleController { nullptr };
+        Login1IdleHint *m_login1Idle { nullptr };
+        DpmsManager *m_dpmsManager { nullptr };
 
         void startup();
         void activatePrimary();

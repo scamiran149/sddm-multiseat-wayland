@@ -29,6 +29,9 @@
 #include "ThemeMetadata.h"
 #include "UserModel.h"
 #include "KeyboardModel.h"
+#include "IdleController.h"
+#include "Login1IdleHint.h"
+#include "DpmsManager.h"
 
 #include "MessageHandler.h"
 
@@ -44,6 +47,9 @@
 #include <QLibraryInfo>
 #include <QVersionNumber>
 #include <QSurfaceFormat>
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <QWheelEvent>
 
 #include <iostream>
 
@@ -284,6 +290,39 @@ namespace SDDM {
         connect(qGuiApp, &QGuiApplication::primaryScreenChanged, this, [this](QScreen *) {
             activatePrimary();
         });
+
+        // Initialize idle handling
+        int idleTimeout = mainConfig.GreeterIdle.IdleTimeout.get();
+        if (idleTimeout > 0) {
+            m_login1Idle = new Login1IdleHint(this);
+            if (m_login1Idle->isAvailable())
+                qDebug() << "logind idle hint available";
+            else
+                qWarning() << "logind idle hint not available, IdleHint will not be set";
+
+            m_dpmsManager = new DpmsManager(this);
+            m_dpmsManager->initialize();
+
+            m_idleController = new IdleController(this);
+            m_idleController->initialize(idleTimeout);
+
+            connect(m_idleController, &IdleController::idle, this, [this]() {
+                qDebug() << "Greeter going idle";
+                m_dpmsManager->screenOff();
+                m_login1Idle->setIdle(true);
+            });
+
+            connect(m_idleController, &IdleController::resumed, this, [this]() {
+                qDebug() << "Greeter resumed from idle";
+                m_dpmsManager->screenOn();
+                m_login1Idle->setIdle(false);
+            });
+
+            // Install event filter on the application to detect user activity
+            qGuiApp->installEventFilter(this);
+        } else {
+            qDebug() << "Idle handling disabled (timeout is 0)";
+        }
     }
 
     void GreeterApp::activatePrimary() {
@@ -294,6 +333,28 @@ namespace SDDM {
                 break;
             }
         }
+    }
+
+    bool GreeterApp::eventFilter(QObject *watched, QEvent *event)
+    {
+        if (m_idleController) {
+            switch (event->type()) {
+            case QEvent::MouseMove:
+            case QEvent::MouseButtonPress:
+            case QEvent::MouseButtonRelease:
+            case QEvent::KeyPress:
+            case QEvent::KeyRelease:
+            case QEvent::Wheel:
+            case QEvent::TouchBegin:
+            case QEvent::TouchUpdate:
+            case QEvent::TouchEnd:
+                m_idleController->onUserActivity();
+                break;
+            default:
+                break;
+            }
+        }
+        return QObject::eventFilter(watched, event);
     }
 
     StartupEvent::StartupEvent()
