@@ -1,4 +1,5 @@
 #include "DpmsManager.h"
+#include "KWinDpmsBackend.h"
 
 #include "Configuration.h"
 
@@ -13,26 +14,6 @@ namespace SDDM {
 bool DpmsCallParams::isValid() const
 {
     return !service.isEmpty() && !path.isEmpty() && !interface.isEmpty() && !method.isEmpty();
-}
-
-DpmsCallParams DpmsManager::kwinDefaultOff()
-{
-    return {
-        QStringLiteral("org.kde.KWin"),
-        QStringLiteral("/ScreenSaver"),
-        QStringLiteral("org.freedesktop.ScreenSaver"),
-        QStringLiteral("SetActive")
-    };
-}
-
-DpmsCallParams DpmsManager::kwinDefaultOn()
-{
-    return {
-        QStringLiteral("org.kde.KWin"),
-        QStringLiteral("/ScreenSaver"),
-        QStringLiteral("org.freedesktop.ScreenSaver"),
-        QStringLiteral("SetActive")
-    };
 }
 
 DpmsManager::DpmsManager(QObject *parent)
@@ -52,35 +33,43 @@ void DpmsManager::initialize()
     configOff.interface = mainConfig.GreeterIdle.DpmsOffInterface.get();
     configOff.method = mainConfig.GreeterIdle.DpmsOffMethod.get();
 
-    if (configOff.isValid()) {
-        m_offParams = configOff;
-        qDebug() << "Using configured DPMS off call:" << m_offParams.service << m_offParams.path << m_offParams.interface << m_offParams.method;
-    } else if (!configOff.service.isEmpty() || !configOff.path.isEmpty() || !configOff.interface.isEmpty() || !configOff.method.isEmpty()) {
-        qWarning() << "Partial DPMS off override detected (requires all of service/path/interface/method). Falling back to built-in default.";
-        m_offParams = kwinDefaultOff();
-    } else {
-        m_offParams = kwinDefaultOff();
-        qDebug() << "Using built-in KWin DPMS off default";
-    }
-
     DpmsCallParams configOn;
     configOn.service = mainConfig.GreeterIdle.DpmsOnService.get();
     configOn.path = mainConfig.GreeterIdle.DpmsOnPath.get();
     configOn.interface = mainConfig.GreeterIdle.DpmsOnInterface.get();
     configOn.method = mainConfig.GreeterIdle.DpmsOnMethod.get();
 
-    if (configOn.isValid()) {
+    bool hasFullOffOverride = configOff.isValid();
+    bool hasFullOnOverride = configOn.isValid();
+    bool hasPartialOffOverride = !configOff.service.isEmpty() || !configOff.path.isEmpty() || !configOff.interface.isEmpty() || !configOff.method.isEmpty();
+    bool hasPartialOnOverride = !configOn.service.isEmpty() || !configOn.path.isEmpty() || !configOn.interface.isEmpty() || !configOn.method.isEmpty();
+
+    if (hasFullOffOverride && hasFullOnOverride) {
+        m_offParams = configOff;
         m_onParams = configOn;
-        qDebug() << "Using configured DPMS on call:" << m_onParams.service << m_onParams.path << m_onParams.interface << m_onParams.method;
-    } else if (!configOn.service.isEmpty() || !configOn.path.isEmpty() || !configOn.interface.isEmpty() || !configOn.method.isEmpty()) {
-        qWarning() << "Partial DPMS on override detected (requires all of service/path/interface/method). Falling back to built-in default.";
-        m_onParams = kwinDefaultOn();
-    } else {
-        m_onParams = kwinDefaultOn();
-        qDebug() << "Using built-in KWin DPMS on default";
+        m_useDbusOverride = true;
+        m_available = true;
+        qDebug() << "DPMS: using configured DBus override for off:" << m_offParams.service << m_offParams.path << m_offParams.interface << m_offParams.method;
+        qDebug() << "DPMS: using configured DBus override for on:" << m_onParams.service << m_onParams.path << m_onParams.interface << m_onParams.method;
+        return;
     }
 
-    m_available = true;
+    if (hasPartialOffOverride) {
+        qWarning() << "DPMS: partial off override detected (requires all of service/path/interface/method). Falling back to native backend.";
+    }
+    if (hasPartialOnOverride) {
+        qWarning() << "DPMS: partial on override detected (requires all of service/path/interface/method). Falling back to native backend.";
+    }
+
+    m_nativeBackend = new KWinDpmsBackend(this);
+    if (m_nativeBackend->initialize()) {
+        m_available = true;
+        qDebug() << "DPMS: using native KWin kde-dpms backend";
+        return;
+    }
+
+    qWarning() << "DPMS: native KWin backend not available, DPMS will not function";
+    m_available = false;
 }
 
 bool DpmsManager::isAvailable() const
@@ -90,12 +79,26 @@ bool DpmsManager::isAvailable() const
 
 void DpmsManager::screenOff()
 {
-    callDpms(m_offParams, false);
+    if (!m_available)
+        return;
+
+    if (m_useDbusOverride) {
+        callDpms(m_offParams, false);
+    } else if (m_nativeBackend) {
+        m_nativeBackend->screenOff();
+    }
 }
 
 void DpmsManager::screenOn()
 {
-    callDpms(m_onParams, true);
+    if (!m_available)
+        return;
+
+    if (m_useDbusOverride) {
+        callDpms(m_onParams, true);
+    } else if (m_nativeBackend) {
+        m_nativeBackend->screenOn();
+    }
 }
 
 void DpmsManager::callDpms(const DpmsCallParams &params, bool on)

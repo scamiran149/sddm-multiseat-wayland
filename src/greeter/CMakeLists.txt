@@ -31,6 +31,8 @@ set(GREETER_SOURCES
     Login1IdleHint.h
     DpmsManager.cpp
     DpmsManager.h
+    KWinDpmsBackend.cpp
+    KWinDpmsBackend.h
     KeyboardLayout.cpp
     KeyboardModel.cpp
     ScreenModel.cpp
@@ -47,6 +49,17 @@ configure_file("theme/metadata.desktop.in" "theme/metadata.desktop" @ONLY)
 qt_add_resources(RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/theme.qrc)
 
 add_executable(${GREETER_TARGET} ${GREETER_SOURCES} ${RESOURCES})
+
+# Generate Wayland protocol client sources for kde-dpms (Qt6 only)
+if(QT_MAJOR_VERSION EQUAL 6)
+    find_package(WaylandScanner REQUIRED)
+    find_package(Qt6 COMPONENTS WaylandClient REQUIRED)
+    qt6_generate_wayland_protocol_client_sources(${GREETER_TARGET}
+        FILES ${CMAKE_CURRENT_SOURCE_DIR}/protocols/dpms.xml
+    )
+    target_link_libraries(${GREETER_TARGET} Qt6::WaylandClient Wayland::Client)
+endif()
+
 target_link_libraries(${GREETER_TARGET}
                       Qt${QT_MAJOR_VERSION}::Quick
                       Qt${QT_MAJOR_VERSION}::DBus
