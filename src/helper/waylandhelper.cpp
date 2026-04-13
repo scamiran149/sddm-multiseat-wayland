@@ -19,7 +19,9 @@
 
 #include <QCoreApplication>
 #include <QFile>
+#include <QFileInfo>
 #include <QStandardPaths>
+#include <QThread>
 
 #include "Configuration.h"
 
@@ -40,7 +42,9 @@ WaylandHelper::WaylandHelper(QObject *parent)
   // pam_systemd failed to create one.
   QString runtimeDir = m_environment.value(QStringLiteral("XDG_RUNTIME_DIR"));
   if (runtimeDir.isEmpty()) {
-    runtimeDir = QStringLiteral("/tmp/runtime-sddm");
+    const QString seatName = m_environment.value(QStringLiteral("XDG_SEAT"));
+    runtimeDir = QStringLiteral("/tmp/runtime-sddm/%1").arg(
+        seatName.isEmpty() ? QStringLiteral("seat0") : seatName);
   }
 
   QDir dir;
@@ -54,6 +58,9 @@ WaylandHelper::WaylandHelper(QObject *parent)
 }
 
 bool WaylandHelper::startCompositor(const QString &cmd) {
+  if (!startDbus())
+    return false;
+
   m_watcher->start();
   return startProcess(cmd, &m_serverProcess);
 }
@@ -75,6 +82,70 @@ void WaylandHelper::stop() {
   m_watcher->stop();
   stopProcess(m_greeterProcess);
   stopProcess(m_serverProcess);
+  stopProcess(m_dbusProcess);
+}
+
+QString WaylandHelper::sessionBusAddress() const {
+  const QString runtimeDir =
+      m_environment.value(QStringLiteral("XDG_RUNTIME_DIR"));
+  const QString seatName = m_environment.value(QStringLiteral("XDG_SEAT"));
+  const QString socketName = seatName.isEmpty()
+                                 ? QStringLiteral("wayland-dbus")
+                                 : QStringLiteral("wayland-dbus-%1").arg(seatName);
+
+  return QStringLiteral("unix:path=%1/%2").arg(runtimeDir, socketName);
+}
+
+bool WaylandHelper::startDbus() {
+  if (m_dbusProcess)
+    return true;
+
+  const QString runtimeDir =
+      m_environment.value(QStringLiteral("XDG_RUNTIME_DIR"));
+  if (runtimeDir.isEmpty()) {
+    qWarning() << "Cannot start D-Bus without XDG_RUNTIME_DIR";
+    return false;
+  }
+
+  const QString busAddress = sessionBusAddress();
+  const QString socketPath = busAddress.section(QLatin1Char('='), 1);
+  if (QFileInfo::exists(socketPath)) {
+    if (!QFile::remove(socketPath)) {
+      qWarning() << "Failed to remove stale D-Bus socket" << socketPath;
+      return false;
+    }
+  }
+
+  m_environment.insert(QStringLiteral("DBUS_SESSION_BUS_ADDRESS"), busAddress);
+
+  m_dbusProcess = new QProcess(this);
+  m_dbusProcess->setProcessEnvironment(m_environment);
+  m_dbusProcess->start(QStringLiteral("dbus-daemon"),
+                       {QStringLiteral("--session"),
+                        QStringLiteral("--address=%1").arg(busAddress),
+                        QStringLiteral("--nofork")});
+  if (!m_dbusProcess->waitForStarted()) {
+    qWarning() << "Failed to start D-Bus session bus"
+               << m_dbusProcess->errorString();
+    m_dbusProcess->deleteLater();
+    m_dbusProcess = nullptr;
+    return false;
+  }
+
+  int retries = 50;
+  while (retries-- > 0 && !QFileInfo::exists(socketPath) &&
+         m_dbusProcess->state() != QProcess::NotRunning) {
+    QThread::msleep(20);
+  }
+
+  if (!QFileInfo::exists(socketPath)) {
+    qWarning() << "D-Bus socket was not created at" << socketPath;
+    stopProcess(m_dbusProcess);
+    m_dbusProcess = nullptr;
+    return false;
+  }
+
+  return true;
 }
 
 bool WaylandHelper::startProcess(const QString &cmd, QProcess **p) {
