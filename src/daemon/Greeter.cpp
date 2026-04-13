@@ -32,15 +32,103 @@
 #include "XorgUserDisplayServer.h"
 
 #include <QtCore/QDebug>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
 #include <QtCore/QProcess>
-#include <QtCore/QThread>
 #include <VirtualTerminal.h>
 
+#include <errno.h>
 #include <sys/stat.h>
 #include <pwd.h>
+#include <string.h>
 #include <unistd.h>
 
 namespace SDDM {
+
+static bool ensureRootOwnedDirectory(const QString &path, mode_t mode) {
+  if (::mkdir(qPrintable(path), mode) == -1 && errno != EEXIST) {
+    qWarning() << "Failed to create runtime directory" << path << strerror(errno);
+    return false;
+  }
+
+  struct stat st;
+  if (::lstat(qPrintable(path), &st) == -1) {
+    qWarning() << "Failed to inspect runtime directory" << path << strerror(errno);
+    return false;
+  }
+
+  if (!S_ISDIR(st.st_mode)) {
+    qWarning() << "Runtime directory path is not a directory:" << path;
+    return false;
+  }
+
+  if (st.st_uid != 0 || st.st_gid != 0) {
+    qWarning() << "Refusing to use non-root-owned runtime directory" << path;
+    return false;
+  }
+
+  if (::chmod(qPrintable(path), mode) == -1) {
+    qWarning() << "Failed to set runtime directory permissions" << path << strerror(errno);
+    return false;
+  }
+
+  return true;
+}
+
+static bool ensureSeatRuntimeDirectory(const QString &path, uid_t uid, gid_t gid,
+                                       mode_t mode) {
+  if (::mkdir(qPrintable(path), mode) == -1 && errno != EEXIST) {
+    qWarning() << "Failed to create seat runtime directory" << path << strerror(errno);
+    return false;
+  }
+
+  struct stat st;
+  if (::lstat(qPrintable(path), &st) == -1) {
+    qWarning() << "Failed to inspect seat runtime directory" << path << strerror(errno);
+    return false;
+  }
+
+  if (!S_ISDIR(st.st_mode)) {
+    qWarning() << "Seat runtime path is not a directory:" << path;
+    return false;
+  }
+
+  if (::chown(qPrintable(path), uid, gid) == -1) {
+    qWarning() << "Failed to change owner of seat runtime directory" << path << strerror(errno);
+    return false;
+  }
+
+  if (::chmod(qPrintable(path), mode) == -1) {
+    qWarning() << "Failed to set seat runtime permissions" << path << strerror(errno);
+    return false;
+  }
+
+  return true;
+}
+
+static QString waylandSeatRuntimeDir(const QString &seatName) {
+  struct passwd *pw = ::getpwnam("sddm");
+  if (!pw) {
+    qWarning() << "Failed to resolve sddm user for Wayland runtime directory";
+    return QString();
+  }
+
+  const QStringList runtimeRoots = {QStringLiteral("/run/sddm"),
+                                    QStringLiteral("/tmp/runtime-sddm")};
+  for (const QString &root : runtimeRoots) {
+    if (!ensureRootOwnedDirectory(root, 0755))
+      continue;
+
+    const QString seatRuntimeDir = QStringLiteral("%1/%2").arg(root, seatName);
+    if (ensureSeatRuntimeDirectory(seatRuntimeDir, pw->pw_uid, pw->pw_gid,
+                                   0700)) {
+      return seatRuntimeDir;
+    }
+  }
+
+  return QString();
+}
+
 Greeter::Greeter(Display *parent) : QObject(parent), m_display(parent) {
   m_metadata = new ThemeMetadata(QString());
   m_themeConfig = new ThemeConfig(QString());
@@ -255,44 +343,14 @@ bool Greeter::start() {
       QString waylandDisplay = QStringLiteral("wayland-%1").arg(seatName);
       env.insert(QStringLiteral("WAYLAND_DISPLAY"), waylandDisplay);
 
-      // Create a secure directory for the socket
-      QString runtimeDir = mainConfig.Wayland.SessionDir.get().first(); // Fallback, let's use a known secure path instead.
-      QString dbusDir = QStringLiteral("/var/run/sddm");
-      QDir().mkpath(dbusDir);
-
-      struct passwd *pw = getpwnam("sddm");
-      if (pw && !daemonApp->testing()) {
-          if (chown(qPrintable(dbusDir), pw->pw_uid, pw->pw_gid) == -1) {
-              qWarning() << "Failed to change owner of the dbus runtime directory";
-          }
-          chmod(qPrintable(dbusDir), 0755);
+      const QString runtimeDir = waylandSeatRuntimeDir(seatName);
+      if (runtimeDir.isEmpty()) {
+        qCritical() << "Failed to prepare per-seat runtime directory for"
+                    << seatName;
+        return false;
       }
 
-      QString dbusAddress =
-          QStringLiteral("unix:path=%1/wayland-dbus-%2").arg(dbusDir, seatName);
-      env.insert(QStringLiteral("DBUS_SESSION_BUS_ADDRESS"), dbusAddress);
-
-      m_dbusProcess = new QProcess(this);
-      m_dbusProcess->start(QStringLiteral("dbus-daemon"),
-                           {QStringLiteral("--session"),
-                            QStringLiteral("--address=%1").arg(dbusAddress),
-                            QStringLiteral("--nofork")});
-
-      if (!daemonApp->testing()) {
-          if (m_dbusProcess->waitForStarted()) {
-              if (pw) {
-                  // wait for socket to be created
-                  QString socketPath = QStringLiteral("%1/wayland-dbus-%2").arg(dbusDir, seatName);
-                  int retries = 50; // 50 * 20ms = 1s
-                  while (retries-- > 0 && access(qPrintable(socketPath), F_OK) == -1) {
-                      QThread::msleep(20);
-                  }
-                  if (chown(qPrintable(socketPath), pw->pw_uid, pw->pw_gid) == -1) {
-                      qWarning() << "Failed to change owner of the dbus socket";
-                  }
-              }
-          }
-      }
+      env.insert(QStringLiteral("XDG_RUNTIME_DIR"), runtimeDir);
     }
     m_auth->insertEnvironment(env);
 
@@ -328,12 +386,6 @@ void Greeter::stop() {
   // log message
   qDebug() << "Greeter stopping...";
 
-  if (m_dbusProcess) {
-    m_dbusProcess->terminate();
-    if (!m_dbusProcess->waitForFinished(2000))
-      m_dbusProcess->kill();
-  }
-
   if (daemonApp->testing()) {
     // terminate process
     m_process->terminate();
@@ -361,11 +413,6 @@ void Greeter::finished() {
   if (m_process) {
     m_process->deleteLater();
     m_process = nullptr;
-  }
-
-  if (m_dbusProcess) {
-    m_dbusProcess->deleteLater();
-    m_dbusProcess = nullptr;
   }
 }
 
@@ -402,14 +449,6 @@ void Greeter::onHelperFinished(Auth::HelperExitStatus status) {
 
   // log message
   qDebug() << "Greeter stopped." << status;
-
-  if (m_dbusProcess) {
-    m_dbusProcess->terminate();
-    if (!m_dbusProcess->waitForFinished(2000))
-      m_dbusProcess->kill();
-    m_dbusProcess->deleteLater();
-    m_dbusProcess = nullptr;
-  }
 
   // clean up
   m_auth->deleteLater();
