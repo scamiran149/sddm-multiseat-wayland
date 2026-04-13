@@ -77,7 +77,6 @@ namespace SDDM {
 
         Auth *m_auth { nullptr };
         QProcess *m_process { nullptr };
-        QProcess *m_dbusProcess { nullptr };
 
         static void insertEnvironmentList(QStringList names, QProcessEnvironment sourceEnv, QProcessEnvironment &targetEnv);
         static QString greeterPathForQt(int qtVersion);

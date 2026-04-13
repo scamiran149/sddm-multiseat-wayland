@@ -21,22 +21,23 @@ They can be used as a starting point for new themes.
 
 Standard SDDM often struggles with multi-seat Wayland due to resource collisions and a lack of process-level isolation for the greeter session. This fork introduces four core architectural changes to ensure stable, concurrent greeters.
 
-### 1. D-Bus Session Isolation
-To prevent session leaks and object collisions (such as the ObjectManager errors often seen in wireplumber), this patch moves D-Bus management into the SDDM daemon's native lifecycle.
-* **Native Lifecycle Tracking:** Instead of relying on wrappers, the daemon utilizes `QProcess` to spawn a private dbus-daemon for each greeter.
-* **Explicit Termination:** The daemon tracks the PID of the D-Bus process and explicitly sends SIGTERM when the greeter stops, ensuring no orphaned daemons or sockets remain between session transitions.
+### 1. Per-Seat Runtime Directory Isolation
+Each greeter receives a dedicated per-seat runtime directory under `/run/sddm/<seat>`, owned by the `sddm` user with mode `0700`. The parent directory `/run/sddm` remains root-owned, preventing symlink attacks and socket precreation by the `sddm` user. When `pam_systemd` provides `XDG_RUNTIME_DIR`, that is used instead; the per-seat directory is created as a fallback only when needed.
 
-### 2. Deterministic Wayland Sockets
+### 2. Non-Root D-Bus Session Bus
+Each greeter's D-Bus session bus is started by the non-root `sddm-helper-start-wayland` process, not by the root daemon. This replaces the previous design where the root daemon started `dbus-daemon` and then performed a pathname-based `chown()` on the socket inside a writable directory, which was a local privilege-escalation path (root follows symlinks owned by `sddm`). The bus socket is now created inside the greeter's `XDG_RUNTIME_DIR` with per-seat naming, and both compositor and greeter inherit the same `DBUS_SESSION_BUS_ADDRESS`. The helper also owns bus lifecycle and cleanup.
+
+### 3. Deterministic Wayland Sockets
 Multi-seat crashes often stem from lockfile collisions in `/run/user/<UID>/` (typically `wayland-0.lock`). This architecture enforces strict socket naming to ensure isolation.
 * **Environment Injection:** The daemon injects a seat-specific `WAYLAND_DISPLAY` variable (e.g., `wayland-seat0`, `wayland-seat1`) into the environment of both the compositor and the greeter.
 * **Socket Namespace:** By using deterministic names based on the `XDG_SEAT`, multiple greeters can run under the same sddm system user without attempting to acquire the same lockfile.
 
-### 3. Native Compositor Socket Argument
+### 4. Native Compositor Socket Argument
 Wayland compositors (like `kwin_wayland`) generally ignore the `WAYLAND_DISPLAY` environment variable when deciding which socket to create as a server.
 * **The Bridge:** A patch in `src/helper/waylandhelper.cpp` natively reads the `WAYLAND_DISPLAY` variable from the helper's environment.
 * **Native CLI Injection:** The helper dynamically appends `--socket <wayland-seatX>` to the compositor's command-line arguments upon launch. This ensures the server (KWin) creates the exact socket the client (SDDM Greeter) is configured to look for.
 
-### 4. Hardware and Input Routing
+### 5. Hardware and Input Routing
 The implementation relies on logind and the `XDG_SEAT` variable to handle hardware access.
 * **DRM Isolation:** The compositor uses the injected `XDG_SEAT` to identify and claim the correct GPU DRM node.
 * **Input Handling:** libinput utilizes the seat assignment to route keyboards, mice, and touchscreens to the correct greeter instance, preventing cross-seat input leakage.

@@ -40,10 +40,13 @@ Q_SIGNALS:
 
 private:
     QProcessEnvironment m_environment;
+    QProcess *m_dbusProcess = nullptr;
     QProcess *m_serverProcess = nullptr;
     QProcess *m_greeterProcess = nullptr;
     WaylandSocketWatcher * const m_watcher;
 
+    QString sessionBusAddress() const;
+    bool startDbus();
     bool startProcess(const QString &cmd, QProcess **p = nullptr);
 };
 
