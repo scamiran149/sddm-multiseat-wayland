@@ -8,8 +8,11 @@
 /tools/seat-telemetry/local/
 /debian/.debhelper/
 /debian/sddm/
+/debian/sddm-theme-*/
 /debian/tmp/
 /debian/*substvars
 /debian/debhelper-build-stamp
 /debian/files
-/debian/sddm-theme-*/
+/data/themes/debian-elarun/
+/data/themes/debian-maui/
+/data/themes/maui/
