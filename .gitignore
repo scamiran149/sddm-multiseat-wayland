@@ -6,3 +6,10 @@
 *.user
 /tools/seat-telemetry/*.log
 /tools/seat-telemetry/local/
+/debian/.debhelper/
+/debian/sddm/
+/debian/tmp/
+/debian/*substvars
+/debian/debhelper-build-stamp
+/debian/files
+/debian/sddm-theme-*/

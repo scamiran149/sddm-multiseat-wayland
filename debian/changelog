@@ -1,3 +1,15 @@
+sddm (0.21.0+git20250502.4fe234b-2ubuntu2~multiseat2~ppa1) questing; urgency=medium
+
+  * Fix local privilege escalation via root-side chown() on D-Bus socket
+    inside sddm-writable directory (CVE-style symlink-following attack).
+  * Move D-Bus session bus startup from root daemon into non-root
+    sddm-helper-start-wayland process.
+  * Introduce per-seat runtime directories under /run/sddm/<seat> with
+    root-owned parent and sddm-owned 0700 subdirectories.
+  * Export per-seat XDG_RUNTIME_DIR from Wayland greeter setup.
+
+ -- scamiran149 <scamiran149@users.noreply.github.com>  Sun, 12 Apr 2026 23:00:00 -0500
+
 sddm (0.21.0+git20250502.4fe234b-2ubuntu2~multiseat1~ppa1) UNRELEASED; urgency=medium
 
   [ Sherwin Amiran ]

@@ -1,0 +1,13 @@
+[Unit]
+Description=SDDM Seat Health Monitor
+Documentation=https://github.com/sddm/sddm
+After=sddm.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/seat-health-monitor --log-dir /var/log/sddm-seat-health
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

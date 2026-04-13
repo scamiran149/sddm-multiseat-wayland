@@ -1,0 +1,19 @@
+/var/log/sddm-seat-health/*.log {
+    daily
+    rotate 5
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}
+
+/var/log/sddm-seat-health/events.jsonl {
+    daily
+    rotate 5
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}
