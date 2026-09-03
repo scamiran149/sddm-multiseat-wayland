@@ -1,3 +1,10 @@
+sddm (0.21.0+git20250502.4fe234b-3ubuntu1~multiseat2~ppa1) resolute; urgency=medium
+
+  * Build for Ubuntu 26.04 LTS.
+  * Stop marking /usr/share/sddm scripts as conffiles.
+
+ -- scamiran149 <scamiran149@users.noreply.github.com>  Sat, 06 Jun 2026 00:00:00 -0500
+
 sddm (0.21.0+git20250502.4fe234b-2ubuntu2~multiseat2~ppa1) questing; urgency=medium
 
   * Fix local privilege escalation via root-side chown() on D-Bus socket
